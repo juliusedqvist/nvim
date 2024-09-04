@@ -123,8 +123,11 @@ vim.opt.cursorline = true
 -- Minimal number of screen lines to keep above and below the cursor.
 vim.opt.scrolloff = 10
 
+-- Enable spellcheck
+
 -- [[ Basic Keymaps ]]
 
+vim.keymap.set("i", "<C-l>", "<c-g>u<Esc>[s1z=`]a<c-g>u")
 vim.keymap.set("i", "jj", "<esc>")
 vim.keymap.set("i", "jk", "<esc>A")
 vim.g.vim_markdown_math = 1
@@ -863,4 +866,3 @@ require("lazy").setup({
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
-
