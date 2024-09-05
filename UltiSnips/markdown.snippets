@@ -617,6 +617,8 @@ snippet phi "phi" iA
 \phi
 endsnippet
 
+
+
 context "math()"
 snippet epsilon "epsilon" iA
 \epsilon
@@ -695,6 +697,18 @@ priority 100
 context "math()"
 snippet "([a-zA-Z])base" "underline" riA
 \overline{`!p snip.rv=match.group(1)`}
+endsnippet
+
+priority 100
+context "math()"
+snippet "([oO])mega" "auto omega" riA
+\\`!p snip.rv=match.group(1)`mega
+endsnippet
+
+priority 100
+context "math()"
+snippet "([tT])heta" "theta" riA
+\\`!p snip.rv=match.group(1)`heta
 endsnippet
 
 priority 100
