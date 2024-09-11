@@ -613,11 +613,26 @@ snippet lambda "lambda" iA
 endsnippet
 
 context "math()"
-snippet phi "phi" iA
-\phi
+snippet gamma "gamma" iA
+\gamma
 endsnippet
 
+context "math()"
+snippet delta "delta" iA
+\delta
+endsnippet
 
+priority 100
+context "math()"
+snippet "([pP])hi" "phi" riA
+\\`!p snip.rv=match.group(1)`hi
+endsnippet
+
+priority 100
+context "math()"
+snippet "([pP])si" "psi" riA
+\\`!p snip.rv=match.group(1)`si
+endsnippet
 
 context "math()"
 snippet epsilon "epsilon" iA
@@ -625,8 +640,18 @@ snippet epsilon "epsilon" iA
 endsnippet
 
 context "math()"
+snippet nu "nu" iA
+\nu
+endsnippet
+
+context "math()"
 snippet rho "rho" iA
 \rho
+endsnippet
+
+context "math()"
+snippet hslash "hslash" iA
+\hslash
 endsnippet
 
 context "math()"
@@ -643,7 +668,6 @@ context "math()"
 snippet mu "mu" iA
 \mu
 endsnippet
-
 
 context "math()"
 snippet top "top" iA
