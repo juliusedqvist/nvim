@@ -297,6 +297,12 @@ endsnippet
 
 priority 1000
 context "math()"
+snippet "dd([a-zA-Z])" "regex derivative one" riA
+\frac{\partial }{\partial `!p snip.rv=match.group(1)`}
+endsnippet
+
+priority 1000
+context "math()"
 snippet "d([a-zA-Z])d([a-zA-Z])" "regex derivative" riA
 \frac{\partial `!p snip.rv=match.group(1)`}{\partial `!p snip.rv=match.group(2)`}
 endsnippet
