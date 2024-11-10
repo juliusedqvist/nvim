@@ -11,10 +11,10 @@ def env(name):
 
 endglobal
 
-snippet beg "Begin{} / end{}" bA
-\\Begin{$1}
+snippet beg "begin{} / end{}" bA
+\\begin{$1}
 	$0
-\\End{$1}
+\\end{$1}
 endsnippet
 
 snippet !the "theorem" iA
@@ -131,9 +131,9 @@ endsnippet
 
 context "math()"
 snippet ali "Align" bA
-\begin{align*}
+\begin{aligned}
 	${1:${VISUAL}}
-\end{align*}
+\end{aligned}
 endsnippet
 
 
@@ -481,6 +481,7 @@ snippet dint "integral" wA
 \int_{${1:-\infty}}^{${2:\infty}} ${3:${VISUAL}} $0
 endsnippet
 
+priority 100
 context "math()"
 snippet dx "dx" iA
 \,dx 
@@ -636,8 +637,20 @@ snippet gamma "gamma" iA
 endsnippet
 
 context "math()"
-snippet delta "delta" iA
-\delta
+snippet tau "tau" iA
+\tau
+endsnippet
+
+priority 100
+context "math()"
+snippet "([dD])elta" "delta" riA
+\\`!p snip.rv=match.group(1)`elta
+endsnippet
+
+priority 100
+context "math()"
+snippet "([xX])i" "xi" riA
+\\`!p snip.rv=match.group(1)`i
 endsnippet
 
 priority 100
@@ -653,7 +666,7 @@ snippet "([pP])si" "psi" riA
 endsnippet
 
 context "math()"
-snippet epsilon "epsilon" iA
+snippet eps "epsilon" iA
 \epsilon
 endsnippet
 
@@ -668,7 +681,7 @@ snippet rho "rho" iA
 endsnippet
 
 context "math()"
-snippet hslash "hslash" iA
+snippet hbr "hslash" iA
 \hslash
 endsnippet
 
@@ -754,13 +767,13 @@ endsnippet
 
 priority 100
 context "math()"
-snippet "([oO])mega" "auto omega" riA
+snippet "([oO])mg" "auto omega" riA
 \\`!p snip.rv=match.group(1)`mega
 endsnippet
 
 priority 100
 context "math()"
-snippet "([tT])heta" "theta" riA
+snippet "([tT])ht" "theta" riA
 \\`!p snip.rv=match.group(1)`heta
 endsnippet
 
