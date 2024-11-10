@@ -1,5 +1,4 @@
 -- Set <space> as the leader key
--- See `:help mapleader`
 
 -- [[ Setting options ]]
 -- See `:help vim.opt`
