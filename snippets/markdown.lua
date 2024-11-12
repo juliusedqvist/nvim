@@ -415,5 +415,48 @@ return {
 			end),
 		})
 	),
+	s({
+		trig = "mdinit",
+		snippetType = "autosnippet",
+	}, {
+		t({ "---", "" }),
+		t({ "header-includes: |", "" }),
+		t({ "\t\\usepackage{tcolorbox}", "" }),
+		t("---"),
+	}),
+	s({
+		trig = "!note",
+		snippetType = "autosnippet",
+	}, {
+		t({ "\\begin{center}", "" }),
+		t({ "\t\\begin{tcolorbox}[colback=blue!5!white,colframe=blue!75!black,title=Note]", "" }),
+		t("\t"),
+		i(0),
+		t({ "", "\t\\end{tcolorbox}", "" }),
+		t({ "\\end{center}", "" }),
+	}),
+	s({
+		trig = "!the",
+		snippetType = "autosnippet",
+	}, {
+		t({ "\\begin{center}", "" }),
+		t({ "\t\\begin{tcolorbox}[colback=red!5!white,colframe=red!75!black,title=Theorem]", "" }),
+		t("\t"),
+		i(0),
+		t({ "", "\t\\end{tcolorbox}", "" }),
+		t({ "\\end{center}", "" }),
+	}),
+	s({
+		trig = "!def",
+		snippetType = "autosnippet",
+	}, {
+		t({ "\\begin{center}", "" }),
+		t({ "\t\\begin{tcolorbox}[colback=yellow!5!white,colframe=yellow!75!black,title=Definition]", "" }),
+		t("\t"),
+		i(0),
+		t({ "", "\t\\end{tcolorbox}", "" }),
+		t({ "\\end{center}", "" }),
+	}),
+
 	s({ trig = "txt", condition = in_mathzone, snippetType = "autosnippet" }, fmta("\\text{<>}", { i(1) })),
 }
