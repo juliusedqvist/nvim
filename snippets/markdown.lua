@@ -147,8 +147,16 @@ return {
 	s({ trig = ">=", snippetType = "autosnippet" }, t("\\ge"), { condition = in_mathzone }),
 	s({ trig = "xx", snippetType = "autosnippet" }, t("\\times"), { condition = in_mathzone }),
 	s({ trig = ",,", snippetType = "autosnippet" }, t("\\cdot"), { condition = in_mathzone }),
-	s({ trig = "->", snippetType = "autosnippet" }, t("\\to"), { condition = in_mathzone }),
-	s({ trig = "<->", snippetType = "autosnippet" }, t("\\leftrightarrow"), { condition = in_mathzone }),
+	s(
+		{ trig = "<->", snippetType = "autosnippet" },
+		t("\\leftrightarrow"),
+		{ condition = in_mathzone, priority = 1000 } -- Higher priority for <->
+	),
+	s(
+		{ trig = "->", snippetType = "autosnippet" },
+		t("\\to"),
+		{ condition = in_mathzone, priority = 500 } -- Lower priority for ->
+	),
 	s({ trig = "->", snippetType = "autosnippet" }, t("\\rightarrow"), { condition = in_mathzone }),
 	s({ trig = "invs", snippetType = "autosnippet" }, t("^{-1}"), { condition = in_mathzone }),
 	s({ trig = "cc", snippetType = "autosnippet" }, t("\\subset"), { condition = in_mathzone }),
@@ -186,6 +194,12 @@ return {
 		}, { delimiters = "{}" })
 	),
 	s(
+		{ trig = "norm", condition = in_mathzone, snippetType = "autosnippet" },
+		fmt("\\left\\| {} \\right\\|", {
+			i(1),
+		}, { delimiters = "{}" })
+	),
+	s(
 		{ trig = "dotp", condition = in_mathzone, snippetType = "autosnippet" },
 		fmt("\\left< {}, {} \\right>", {
 			i(1),
@@ -218,7 +232,13 @@ return {
 		fmta("\\frac{\\partial^2 <>}{\\partial <>^2}", { i(1, "y"), i(2, "x") })
 	),
 	s(
-		{ trig = "d([a-zA-Z])d([a-zA-Z])", regTrig = true, wordTrig = false, snippetType = "autosnippet" },
+		{
+			trig = "d([a-zA-Z])d([a-zA-Z])",
+			regTrig = true,
+			wordTrig = false,
+			snippetType = "autosnippet",
+			condition = in_mathzone,
+		},
 		fmta("\\frac{\\partial <>", {
 			f(function(_, snip)
 				return snip.captures[1] .. "}{\\partial " .. snip.captures[2] .. "}"
@@ -226,7 +246,13 @@ return {
 		})
 	),
 	s(
-		{ trig = "2d([a-zA-Z])d([a-zA-Z])", regTrig = true, wordTrig = false, snippetType = "autosnippet" },
+		{
+			trig = "2d([a-zA-Z])d([a-zA-Z])",
+			regTrig = true,
+			wordTrig = false,
+			snippetType = "autosnippet",
+			condition = in_mathzone,
+		},
 		fmta("\\frac{\\partial^2 <>", {
 			f(function(_, snip)
 				return snip.captures[1] .. "}{\\partial " .. snip.captures[2] .. "^2}"
@@ -234,7 +260,13 @@ return {
 		})
 	),
 	s(
-		{ trig = "dd([a-zA-Z])", regTrig = true, wordTrig = false, snippetType = "autosnippet" },
+		{
+			trig = "dd([a-zA-Z])",
+			regTrig = true,
+			wordTrig = false,
+			snippetType = "autosnippet",
+			condition = in_mathzone,
+		},
 		fmta("\\frac{\\partial}{\\partial <>}", {
 			f(function(_, snip)
 				return snip.captures[1]
