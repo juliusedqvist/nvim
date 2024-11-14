@@ -85,6 +85,8 @@ return {
 	s({ trig = "Chi", snippetType = "autosnippet" }, t("\\Chi"), { condition = in_mathzone }),
 	s({ trig = "psi", snippetType = "autosnippet" }, t("\\psi"), { condition = in_mathzone }),
 	s({ trig = "Psi", snippetType = "autosnippet" }, t("\\Psi"), { condition = in_mathzone }),
+	s({ trig = "nab", snippetType = "autosnippet" }, t("\\nabla"), { condition = in_mathzone }),
+	s({ trig = "xk", snippetType = "autosnippet" }, t("x_k"), { condition = in_mathzone }),
 
 	-- Functions
 
@@ -176,6 +178,13 @@ return {
 		})
 	),
 	s(
+		{ trig = "lrs", condition = in_mathzone, snippetType = "autosnippet" },
+		fmta("\\left[ <> \\right]", {
+			i(1),
+		})
+	),
+
+	s(
 		{ trig = "lrb", condition = in_mathzone, snippetType = "autosnippet" },
 		fmta("\\left{ <> \\right}", {
 			i(1),
@@ -187,6 +196,7 @@ return {
 			i(1),
 		}, { delimiters = "{}" })
 	),
+
 	s(
 		{ trig = "abs", condition = in_mathzone, snippetType = "autosnippet" },
 		fmt("\\left| {} \\right|", {
@@ -291,8 +301,6 @@ return {
 	),
 
 	s({ trig = "sq", condition = in_mathzone, snippetType = "autosnippet" }, fmta("\\sqrt{<>}", { i(1) })),
-	s({ trig = "td", condition = in_mathzone, snippetType = "autosnippet" }, fmta("^{<>}", { i(1) })),
-	s({ trig = "__", condition = in_mathzone, snippetType = "autosnippet" }, fmta("_{<>}", { i(1) })),
 
 	-- Matrix
 
@@ -363,11 +371,47 @@ return {
 		}, { delimiters = "<>" })
 	),
 	s(
-		{ trig = "([%a%)%]%}])(%d)", regTrig = true, wordTrig = false, snippetType = "autosnippet" },
+		{
+			trig = "([%a%)%]%}%|])(%d)",
+			regTrig = true,
+			wordTrig = false,
+			snippetType = "autosnippet",
+			description = "auto_subscript",
+		},
 		fmta("<>", {
 			f(function(_, snip)
 				return snip.captures[1] .. "_{" .. snip.captures[2] .. "}"
 			end),
+		})
+	),
+	s(
+		{
+			trig = "([%a%)%]%}%|])(__)",
+			regTrig = true,
+			wordTrig = false,
+			snippetType = "autosnippet",
+			description = "subscript",
+		},
+		fmta("<>_{<>}", {
+			f(function(_, snip)
+				return snip.captures[1]
+			end),
+			i(1),
+		})
+	),
+	s(
+		{
+			trig = "([%a%)%]%}%|])(td)",
+			regTrig = true,
+			wordTrig = false,
+			snippetType = "autosnippet",
+			description = "to the power of",
+		},
+		fmta("<>^{<>}", {
+			f(function(_, snip)
+				return snip.captures[1]
+			end),
+			i(1),
 		})
 	),
 	s(
@@ -412,6 +456,20 @@ return {
 		fmta("<>", {
 			f(function(_, snip)
 				return "\\mathcal{" .. snip.captures[1]:sub(1, 1) .. "}"
+			end),
+		})
+	),
+	s(
+		{
+			trig = "([a-zA-Z]bar)",
+			regTrig = true,
+			wordTrig = false,
+			snippetType = "autosnippet",
+			condition = in_mathzone,
+		},
+		fmta("<>", {
+			f(function(_, snip)
+				return "\\overline{" .. snip.captures[1]:sub(1, 1) .. "}"
 			end),
 		})
 	),

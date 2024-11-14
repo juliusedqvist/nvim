@@ -68,6 +68,7 @@ vim.keymap.set("i", "<C-l>", "<c-g>u<Esc>[s1z=`]a<c-g>u")
 vim.keymap.set("i", "jj", "<esc>")
 vim.keymap.set("i", "jk", "<esc>A")
 vim.g.vim_markdown_math = 1
+vim.keymap.set("n", "<leader>u", vim.cmd.UndotreeToggle)
 
 vim.keymap.set("i", "<Tab>", function()
 	return require("luasnip").expand_or_jumpable() and "<Plug>luasnip-expand-or-jump" or "<Tab>"
@@ -206,9 +207,45 @@ require("lazy").setup({
 		},
 	},
 	{
+		"mbbill/undotree",
+	},
+	{
 		"preservim/vim-markdown",
 	},
-
+	{
+		"abecodes/tabout.nvim",
+		lazy = false,
+		config = function()
+			require("tabout").setup({
+				tabkey = "<C-j>", -- key to trigger tabout, set to an empty string to disable
+				backwards_tabkey = "<S-Tab>", -- key to trigger backwards tabout, set to an empty string to disable
+				act_as_tab = true, -- shift content if tab out is not possible
+				act_as_shift_tab = false, -- reverse shift content if tab out is not possible (if your keyboard/terminal supports <S-Tab>)
+				default_tab = "<C-t>", -- shift default action (only at the beginning of a line, otherwise <TAB> is used)
+				default_shift_tab = "<C-d>", -- reverse shift default action,
+				enable_backwards = true, -- well ...
+				completion = false, -- if the tabkey is used in a completion pum
+				tabouts = {
+					{ open = "'", close = "'" },
+					{ open = '"', close = '"' },
+					{ open = "`", close = "`" },
+					{ open = "(", close = ")" },
+					{ open = "[", close = "]" },
+					{ open = "{", close = "}" },
+				},
+				ignore_beginning = true, --[[ if the cursor is at the beginning of a filled element it will rather tab out than shift the content ]]
+				exclude = {}, -- tabout will ignore these filetypes
+			})
+		end,
+		dependencies = { -- These are optional
+			"nvim-treesitter/nvim-treesitter",
+			"L3MON4D3/LuaSnip",
+			"hrsh7th/nvim-cmp",
+		},
+		opt = true, -- Set this to true if the plugin is optional
+		event = "InsertCharPre", -- Set the event to 'InsertCharPre' for better compatibility
+		priority = 1000,
+	},
 	{
 		"posva/vim-vue",
 	},
@@ -763,43 +800,44 @@ require("lazy").setup({
 			--  Check out: https://github.com/echasnovski/mini.nvim
 		end,
 	},
-	-- { -- Highlight, edit, and navigate code
-	-- 	"nvim-treesitter/nvim-treesitter",
-	-- 	build = ":TSUpdate",
-	-- 	main = "nvim-treesitter.configs", -- Sets main module to use for opts
-	-- 	-- [[ Configure Treesitter ]] See `:help nvim-treesitter`
-	-- 	opts = {
-	-- 		ensure_installed = {
-	-- 			"bash",
-	-- 			"c",
-	-- 			"diff",
-	-- 			"html",
-	-- 			"lua",
-	-- 			"luadoc",
-	-- 			"markdown",
-	-- 			"markdown_inline",
-	-- 			"query",
-	-- 			"vim",
-	-- 			"vimdoc",
-	-- 		},
-	-- 		-- Autoinstall languages that are not installed
-	-- 		auto_install = true,
-	-- 		highlight = {
-	-- 			enable = true,
-	-- 			-- Some languages depend on vim's regex highlighting system (such as Ruby) for indent rules.
-	-- 			--  If you are experiencing weird indenting issues, add the language to
-	-- 			--  the list of additional_vim_regex_highlighting and disabled languages for indent.
-	-- 			additional_vim_regex_highlighting = { "ruby" },
-	-- 		},
-	-- 		indent = { enable = true, disable = { "ruby" } },
-	-- 	},
-	-- 	-- There are additional nvim-treesitter modules that you can use to interact
-	-- 	-- with nvim-treesitter. You should go explore a few and see what interests you:
-	-- 	--
-	-- 	--    - Incremental selection: Included, see `:help nvim-treesitter-incremental-selection-mod`
-	-- 	--    - Show your current context: https://github.com/nvim-treesitter/nvim-treesitter-context
-	-- 	--    - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
-	-- },
+	{ -- Highlight, edit, and navigate code
+		"nvim-treesitter/nvim-treesitter",
+		build = ":TSUpdate",
+		main = "nvim-treesitter.configs", -- Sets main module to use for opts
+		-- [[ Configure Treesitter ]] See `:help nvim-treesitter`
+		opts = {
+			ensure_installed = {
+				"bash",
+				"c",
+				"diff",
+				"html",
+				"lua",
+				"luadoc",
+				"markdown",
+				"markdown_inline",
+				"query",
+				"vim",
+				"vimdoc",
+			},
+			-- Autoinstall languages that are not installed
+			auto_install = true,
+			highlight = {
+				enable = true,
+				disable = { "latex" },
+				-- Some languages depend on vim's regex highlighting system (such as Ruby) for indent rules.
+				--  If you are experiencing weird indenting issues, add the language to
+				--  the list of additional_vim_regex_highlighting and disabled languages for indent.
+				additional_vim_regex_highlighting = { "latex", "ruby", "markdown" },
+			},
+			indent = { enable = true, disable = { "ruby" } },
+		},
+		-- There are additional nvim-treesitter modules that you can use to interact
+		-- with nvim-treesitter. You should go explore a few and see what interests you:
+		--
+		--    - Incremental selection: Included, see `:help nvim-treesitter-incremental-selection-mod`
+		--    - Show your current context: https://github.com/nvim-treesitter/nvim-treesitter-context
+		--    - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
+	},
 
 	-- The following two comments only work if you have downloaded the kickstart repo, not just copy pasted the
 	-- init.lua. If you want these files, they are in the repository, so you can just download them and
