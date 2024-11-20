@@ -292,7 +292,13 @@ return {
 	-- Integral variable
 
 	s(
-		{ trig = "([a-zA-Z]var)", regTrig = true, wordTrig = false, snippetType = "autosnippet" },
+		{
+			trig = "([a-zA-Z]var)",
+			regTrig = true,
+			wordTrig = false,
+			snippetType = "autosnippet",
+			condition = in_mathzone,
+		},
 		fmta("<>", {
 			f(function(_, snip)
 				return "\\,d" .. snip.captures[1]:sub(1, 1)
@@ -377,6 +383,7 @@ return {
 			wordTrig = false,
 			snippetType = "autosnippet",
 			description = "auto_subscript",
+			condition = in_mathzone,
 		},
 		fmta("<>", {
 			f(function(_, snip)
@@ -397,6 +404,21 @@ return {
 				return snip.captures[1]
 			end),
 			i(1),
+		})
+	),
+	s(
+		{
+			trig = "([%a%)%]%}%|])(TT)",
+			regTrig = true,
+			wordTrig = false,
+			snippetType = "autosnippet",
+			description = "to the power of",
+			condition = in_mathzone,
+		},
+		fmta("<>^{T}", {
+			f(function(_, snip)
+				return snip.captures[1]
+			end),
 		})
 	),
 	s(
@@ -480,7 +502,13 @@ return {
 		t({ "---", "" }),
 		t({ "header-includes: |", "" }),
 		t({ "\t\\usepackage{tcolorbox}", "" }),
-		t("---"),
+		t({ "\t\\usepackage{xifthen}", "" }),
+		t({ "\t\\usepackage{pdfpages}", "" }),
+		t({ "\t\\usepackage{transparent}", "" }),
+		t({ "\t\\usepackage{import}", "" }),
+		t({ "---", "" }),
+		t({ "", "" }),
+		t("\\newcommand{\\incfig}[1]{\\def\\svgwidth{\\columnwidth}\\import{./figures/}{#1.pdf_tex}}"),
 	}),
 	s({
 		trig = "!note",

@@ -194,18 +194,7 @@ require("lazy").setup({
 			},
 		},
 	},
-	{
-		"lervag/vimtex",
-		lazy = false, -- lazy-loading will disable inverse search
-		config = function()
-			vim.g.vimtex_mappings_disable = { ["n"] = { "K" } } -- disable `K` as it conflicts with LSP hover
-			vim.g.vimtex_quickfix_method = vim.fn.executable("pplatex") == 1 and "pplatex" or "latexlog"
-			vim.g.vimtex_view_method = "zathura"
-		end,
-		keys = {
-			{ "<localLeader>l", "", desc = "+vimtex" },
-		},
-	},
+
 	{
 		"mbbill/undotree",
 	},
@@ -837,6 +826,64 @@ require("lazy").setup({
 		--    - Incremental selection: Included, see `:help nvim-treesitter-incremental-selection-mod`
 		--    - Show your current context: https://github.com/nvim-treesitter/nvim-treesitter-context
 		--    - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
+	},
+	{
+		"lervag/vimtex",
+		lazy = false, -- lazy-loading will disable inverse search
+		config = function()
+			vim.g.vimtex_mappings_disable = { ["n"] = { "K" } } -- disable `K` as it conflicts with LSP hover
+			vim.g.vimtex_quickfix_method = vim.fn.executable("pplatex") == 1 and "pplatex" or "latexlog"
+			vim.g.vimtex_view_method = "zathura"
+		end,
+		keys = {
+			{ "<localLeader>l", "", desc = "+vimtex" },
+		},
+	},
+	{
+		"TobinPalmer/pastify.nvim",
+		cmd = { "Pastify", "PastifyAfter" },
+		event = { "BufReadPost" }, -- Load after the buffer is read, I like to be able to paste right away
+		keys = {
+			{ noremap = true, mode = "x", "<leader>p", "<cmd>PastifyAfter<CR>" },
+			{ noremap = true, mode = "n", "<leader>p", "<cmd>PastifyAfter<CR>" },
+			{ noremap = true, mode = "n", "<leader>P", "<cmd>Pastify<CR>" },
+		},
+		config = function()
+			require("pastify").setup({
+				opts = {
+					absolute_path = false, -- use absolute or relative path to the working directory
+					apikey = "", -- Api key, required for online saving
+					local_path = "/assets/imgs/", -- The path to put local files in, ex ~/Projects/<name>/assets/images/<imgname>.png
+					save = "local", -- Either 'local' or 'online' or 'local_file'
+					filename = function()
+						return vim.fn.expand("%:t:r") .. "_" .. os.date("%Y-%m-%d_%H-%M-%S")
+					end,
+					default_ft = "markdown", -- Default filetype to use
+				},
+				ft = { -- Custom snippets for different filetypes, will replace $IMG$ with the image url
+					html = '<img src="$IMG$" alt="">',
+					markdown = "![]($IMG$)",
+					tex = [[\includegraphics[width=\linewidth]{$IMG$}]],
+					css = 'background-image: url("$IMG$");',
+					js = 'const img = new Image(); img.src = "$IMG$";',
+					xml = '<image src="$IMG$" />',
+					php = '<?php echo "<img src="$IMG$" alt="">"; ?>',
+					python = "# $IMG$",
+					java = "// $IMG$",
+					c = "// $IMG$",
+					cpp = "// $IMG$",
+					swift = "// $IMG$",
+					kotlin = "// $IMG$",
+					go = "// $IMG$",
+					typescript = "// $IMG$",
+					ruby = "# $IMG$",
+					vhdl = "-- $IMG$",
+					verilog = "// $IMG$",
+					systemverilog = "// $IMG$",
+					lua = "-- $IMG$",
+				},
+			})
+		end,
 	},
 
 	-- The following two comments only work if you have downloaded the kickstart repo, not just copy pasted the
