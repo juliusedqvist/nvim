@@ -24,6 +24,7 @@ local postfixm = extdec.apply(postfix, { condition = in_mathzone, show_condition
 return {
 	-- Test Greek
 	s({ trig = "alp", snippetType = "autosnippet" }, t("\\alpha"), { condition = in_mathzone }),
+	s({ trig = "circ", snippetType = "autosnippet" }, t("\\circ"), { condition = in_mathzone }),
 
 	-- Example regex
 
@@ -48,7 +49,7 @@ return {
 	s({ trig = "del", snippetType = "autosnippet" }, t("\\delta"), { condition = in_mathzone }),
 	s({ trig = "Del", snippetType = "autosnippet" }, t("\\Delta"), { condition = in_mathzone }),
 	s({ trig = "eps", snippetType = "autosnippet" }, t("\\epsilon"), { condition = in_mathzone }),
-	s({ trig = "Eps", snippetType = "autosnippet" }, t("\\Epsiolon"), { condition = in_mathzone }),
+	s({ trig = "Eps", snippetType = "autosnippet" }, t("\\Epsilon"), { condition = in_mathzone }),
 	s({ trig = "zeta", snippetType = "autosnippet" }, t("\\zeta"), { condition = in_mathzone }),
 	s({ trig = "Zeta", snippetType = "autosnippet" }, t("\\Zeta"), { condition = in_mathzone }),
 	s({ trig = "eta", snippetType = "autosnippet" }, t("\\eta"), { condition = in_mathzone }),
@@ -313,8 +314,9 @@ return {
 	s({ trig = "pmat", condition = in_mathzone, snippetType = "autosnippet" }, {
 		t("\\begin{pmatrix}"),
 		t({ "", "\t" }),
-		i(0),
+		i(1),
 		t({ "", "\\end{pmatrix}" }),
+		i(0),
 	}),
 
 	-- Math operations
@@ -436,6 +438,7 @@ return {
 			i(1),
 		})
 	),
+	s({ trig = "td", condition = in_mathzone, snippetType = "autosnippet" }, fmta("^{<>}", { i(1) })),
 	s(
 		{
 			trig = "([a-zA-Z]hat)",
@@ -517,9 +520,10 @@ return {
 		t({ "\\begin{center}", "" }),
 		t({ "\t\\begin{tcolorbox}[colback=blue!5!white,colframe=blue!75!black,title=Note]", "" }),
 		t("\t"),
-		i(0),
+		i(1),
 		t({ "", "\t\\end{tcolorbox}", "" }),
 		t({ "\\end{center}", "" }),
+		i(0),
 	}),
 	s({
 		trig = "!the",
@@ -528,9 +532,10 @@ return {
 		t({ "\\begin{center}", "" }),
 		t({ "\t\\begin{tcolorbox}[colback=red!5!white,colframe=red!75!black,title=Theorem]", "" }),
 		t("\t"),
-		i(0),
+		i(1),
 		t({ "", "\t\\end{tcolorbox}", "" }),
 		t({ "\\end{center}", "" }),
+		i(0),
 	}),
 	s({
 		trig = "!def",
@@ -539,9 +544,10 @@ return {
 		t({ "\\begin{center}", "" }),
 		t({ "\t\\begin{tcolorbox}[colback=yellow!5!white,colframe=yellow!75!black,title=Definition]", "" }),
 		t("\t"),
-		i(0),
+		i(1),
 		t({ "", "\t\\end{tcolorbox}", "" }),
 		t({ "\\end{center}", "" }),
+		i(0),
 	}),
 
 	s({ trig = "txt", condition = in_mathzone, snippetType = "autosnippet" }, fmta("\\text{<>}", { i(1) })),
