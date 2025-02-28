@@ -1,4 +1,20 @@
+local function in_sympy_block()
+	local cursor = vim.api.nvim_win_get_cursor(0)
+	local line = vim.api.nvim_buf_get_lines(0, cursor[1] - 1, cursor[1], false)[1]
+	return line and line:match("sympy .* sympy") ~= nil
+end
+
 local ls = require("luasnip")
+
+ls.config.setup({
+	enable_autosnippets = true,
+	ext_opts = {
+		condition = function()
+			return not in_sympy_block()
+		end,
+	},
+})
+
 local s = ls.snippet
 local f = ls.function_node
 local t = ls.text_node
@@ -12,7 +28,7 @@ local postfix = require("luasnip.extras.postfix").postfix
 local sn = ls.snippet_node
 
 local function in_mathzone()
-	return vim.api.nvim_eval("vimtex#syntax#in_mathzone()") == 1
+	return vim.api.nvim_eval("vimtex#syntax#in_mathzone()") == 1 and not in_sympy_block()
 end
 
 extdec.register(s, { arg_indx = 3 })
