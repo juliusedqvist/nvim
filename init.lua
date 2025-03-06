@@ -69,6 +69,12 @@ vim.opt.scrolloff = 10
 
 vim.keymap.set("i", "<C-l>", "<c-g>u<Esc>[s1z=`]a<c-g>u")
 vim.keymap.set("i", "jj", "<esc>")
+vim.keymap.set("n", "<C-s>", ":w<CR>", { noremap = true })
+vim.keymap.set("n", "en", ":setlocal spell spelllang=en_us<CR>")
+vim.keymap.set("n", "öö", "]s", { desc = "Next spelling error" })
+vim.keymap.set("n", "ää", "[s", { desc = "Previous spelling error" })
+
+vim.keymap.set("n", "zz", "1z=", { desc = "Fix spelling error with first suggestion" })
 vim.keymap.set("i", "jk", "<esc>A")
 vim.g.vim_markdown_math = 1
 vim.keymap.set("n", "<leader>u", vim.cmd.UndotreeToggle)
@@ -754,7 +760,6 @@ require("lazy").setup({
 		dependencies = { "nvim-lua/plenary.nvim" },
 		opts = { signs = false },
 	},
-
 	{ -- Collection of various small independent plugins/modules
 		"echasnovski/mini.nvim",
 		config = function()

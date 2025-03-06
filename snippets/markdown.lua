@@ -39,13 +39,36 @@ local sb = extdec.apply(s, { condition = line_begin })
 local postfixm = extdec.apply(postfix, { condition = in_mathzone, show_condition = in_mathzone })
 
 return {
+	s("note", {
+		t({
+			"# Note",
+			"model: KaTeX and Markdown Basic (Color)",
+			"markdown: false",
+			"tags: ",
+		}),
+		i(1, "tags"),
+		t({
+			"",
+			"## Front",
+			"**",
+		}),
+		i(2, "category"),
+		t({ "**", "" }),
+		i(3, "Question"),
+		t({
+			"",
+			"## Back",
+			"",
+		}),
+		i(4, "Answer"),
+	}),
 	-- Test Greek
 	s({ trig = "alp", snippetType = "autosnippet" }, t("\\alpha"), { condition = in_mathzone }),
 	s({ trig = "circ", snippetType = "autosnippet" }, t("\\circ"), { condition = in_mathzone }),
 
 	-- Example regex
 	s( -- This snippets creates the sympy block ;)
-		{ trig = "sym", desc = "Creates a sympy block" },
+		{ trig = "sm", desc = "Creates a sympy block" },
 		fmt("sympy {} sympy{}", { i(1), i(0) })
 	),
 
@@ -138,8 +161,8 @@ print_latex(parsed)
 	s({ trig = "Sigma", snippetType = "autosnippet" }, t("\\Sigma"), { condition = in_mathzone }),
 	s({ trig = "tau", snippetType = "autosnippet" }, t("\\tau"), { condition = in_mathzone }),
 	s({ trig = "Tau", snippetType = "autosnippet" }, t("\\Tau"), { condition = in_mathzone }),
-	s({ trig = "upsilon", snippetType = "autosnippet" }, t("\\upsilon"), { condition = in_mathzone }),
-	s({ trig = "Upsilon", snippetType = "autosnippet" }, t("\\Upsilon"), { condition = in_mathzone }),
+	s({ trig = "ups", snippetType = "autosnippet" }, t("\\upsilon"), { condition = in_mathzone }),
+	s({ trig = "Ups", snippetType = "autosnippet" }, t("\\Upsilon"), { condition = in_mathzone }),
 	s({ trig = "phi", snippetType = "autosnippet" }, t("\\phi"), { condition = in_mathzone }),
 	s({ trig = "Phi", snippetType = "autosnippet" }, t("\\Phi"), { condition = in_mathzone }),
 	s({ trig = "chi", snippetType = "autosnippet" }, t("\\chi"), { condition = in_mathzone }),
@@ -191,7 +214,7 @@ print_latex(parsed)
 	}),
 	s({ trig = "ali", condition = in_mathzone, snippetType = "autosnippet" }, {
 		t("\\begin{aligned}"),
-		t({ "", "\t\\item " }),
+		t({ "", "\t" }),
 		i(0),
 		t({ "", "\\end{aligned}" }),
 	}),
@@ -229,6 +252,7 @@ print_latex(parsed)
 	s({ trig = "hbr", snippetType = "autosnippet" }, t("\\hslash"), { condition = in_mathzone }),
 	s({ trig = "top", snippetType = "autosnippet" }, t("\\top"), { condition = in_mathzone }),
 	s({ trig = "bot", snippetType = "autosnippet" }, t("\\bot"), { condition = in_mathzone }),
+	s({ trig = "der", snippetType = "autosnippet" }, t("\\dot"), { condition = in_mathzone }),
 
 	-- Math more complex
 
@@ -247,7 +271,7 @@ print_latex(parsed)
 
 	s(
 		{ trig = "lrb", condition = in_mathzone, snippetType = "autosnippet" },
-		fmta("\\left{ <> \\right}", {
+		fmta("\\left\\{ <> \\right\\}", {
 			i(1),
 		})
 	),
@@ -344,7 +368,12 @@ print_latex(parsed)
 			end),
 		})
 	),
-	s({ trig = "int", condition = in_mathzone, snippetType = "autosnippet" }, fmta("\\int <>", { i(1) })),
+	s({ trig = "int", condition = in_mathzone, snippetType = "autosnippet" }, fmta("\\int<>", { i(1) })),
+	s({ trig = "iint", condition = in_mathzone, snippetType = "autosnippet" }, fmta("\\iint<>", { i(1) })),
+	s({ trig = "oint", condition = in_mathzone, snippetType = "autosnippet" }, fmta("\\oint<>", { i(1) })),
+	s({ trig = "oiint", condition = in_mathzone, snippetType = "autosnippet" }, fmta("\\oiint<>", { i(1) })),
+	s({ trig = "iiint", condition = in_mathzone, snippetType = "autosnippet" }, fmta("\\iiint<>", { i(1) })),
+	s({ trig = "oiiint", condition = in_mathzone, snippetType = "autosnippet" }, fmta("\\oiiint<>", { i(1) })),
 	s(
 		{ trig = "dint", condition = in_mathzone, snippetType = "autosnippet" },
 		fmta("\\int_{<>}^{<>}<>", { i(1, "0"), i(2, "\\infty"), i(3) })
@@ -470,6 +499,21 @@ print_latex(parsed)
 	),
 	s(
 		{
+			trig = "([%a%)%]%}%|])( txt)",
+			regTrig = true,
+			wordTrig = false,
+			snippetType = "autosnippet",
+			description = "subscript",
+		},
+		fmta("<>_{\\text{<>}}", {
+			f(function(_, snip)
+				return snip.captures[1]
+			end),
+			i(1),
+		})
+	),
+	s(
+		{
 			trig = "([%a%)%]%}%|])(TT)",
 			regTrig = true,
 			wordTrig = false,
@@ -558,20 +602,29 @@ print_latex(parsed)
 			end),
 		})
 	),
+	s(
+		{
+			trig = "([a-zA-Z]bd)",
+			regTrig = true,
+			wordTrig = false,
+			snippetType = "autosnippet",
+			condition = in_mathzone,
+		},
+		fmta("<>", {
+			f(function(_, snip)
+				return "\\mathbf{" .. snip.captures[1]:sub(1, 1) .. "}"
+			end),
+		})
+	),
 	s({
 		trig = "mdinit",
 		snippetType = "autosnippet",
 	}, {
 		t({ "---", "" }),
-		t({ "header-includes: |", "" }),
-		t({ "\t\\usepackage{tcolorbox}", "" }),
-		t({ "\t\\usepackage{xifthen}", "" }),
-		t({ "\t\\usepackage{pdfpages}", "" }),
-		t({ "\t\\usepackage{transparent}", "" }),
-		t({ "\t\\usepackage{import}", "" }),
+		t("pandoc_:"),
+		t({ "", "  - output: .pdf", "" }),
 		t({ "---", "" }),
 		t({ "", "" }),
-		t("\\newcommand{\\incfig}[1]{\\def\\svgwidth{\\columnwidth}\\import{./figures/}{#1.pdf_tex}}"),
 	}),
 	s({
 		trig = "!note",
@@ -610,5 +663,6 @@ print_latex(parsed)
 		i(0),
 	}),
 
-	s({ trig = "txt", condition = in_mathzone, snippetType = "autosnippet" }, fmta("\\text{<>}", { i(1) })),
+	s({ trig = "tt", condition = in_mathzone, snippetType = "autosnippet" }, fmta("\\text{<>}", { i(1) })),
+	s({ trig = "bb", condition = in_mathzone, snippetType = "autosnippet" }, fmta("\\mathbf{<>}", { i(1) })),
 }
