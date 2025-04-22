@@ -1,10 +1,3 @@
--- Set <space> as the leader key
-
--- [[ Setting options ]]
--- See `:help vim.opt`
--- NOTE: You can change these options as you wish!
---  For more options, you can see `:help option-list`
-
 -- Make line numbers default
 vim.opt.number = true
 vim.opt.relativenumber = true
@@ -27,6 +20,7 @@ vim.opt.clipboard = "unnamedplus"
 vim.opt.breakindent = true
 
 vim.opt.tabstop = 4
+vim.opt.softtabstop = 4
 vim.opt.shiftwidth = 4
 
 -- Save undo history
@@ -71,13 +65,24 @@ vim.keymap.set("i", "<C-l>", "<c-g>u<Esc>[s1z=`]a<c-g>u")
 vim.keymap.set("i", "jj", "<esc>")
 vim.keymap.set("n", "<C-s>", ":w<CR>", { noremap = true })
 vim.keymap.set("n", "en", ":setlocal spell spelllang=en_us<CR>")
-vim.keymap.set("n", "öö", "]s", { desc = "Next spelling error" })
+vim.keymap.set("n", "sv", ":setlocal spell spelllang=sv<CR>")
+vim.keymap.set("n", "mm", "]s", { desc = "Next spelling error" })
 vim.keymap.set("n", "ää", "[s", { desc = "Previous spelling error" })
+
+vim.keymap.set("n", "ö", ";", { noremap = true })
+vim.keymap.set("n", "Ö", ":", { noremap = true })
+vim.keymap.set("v", "ö", ";", { noremap = true })
+vim.keymap.set("v", "Ö", ":", { noremap = true })
 
 vim.keymap.set("n", "zz", "1z=", { desc = "Fix spelling error with first suggestion" })
 vim.keymap.set("i", "jk", "<esc>A")
 vim.g.vim_markdown_math = 1
 vim.keymap.set("n", "<leader>u", vim.cmd.UndotreeToggle)
+
+vim.keymap.set("i", "ö<Tab>", function()
+	-- Insert a tab, even if a jump is available
+	return "<Tab>"
+end, { expr = true, silent = true })
 
 vim.keymap.set("i", "<Tab>", function()
 	return require("luasnip").expand_or_jumpable() and "<Plug>luasnip-expand-or-jump" or "<Tab>"
@@ -86,6 +91,20 @@ end, { expr = true, silent = true })
 vim.keymap.set("s", "<Tab>", function()
 	return require("luasnip").jumpable(1) and "<Plug>luasnip-jump-next" or "<Tab>"
 end, { expr = true, silent = true })
+
+vim.keymap.set("n", "<leader>dup", function()
+	vim.ui.input({ prompt = "Folder name: " }, function(folder)
+		if not folder or folder == "" then
+			return
+		end
+		vim.ui.input({ prompt = "File name: " }, function(file)
+			if not file or file == "" then
+				return
+			end
+			vim.cmd("Duplicate " .. folder .. " " .. file)
+		end)
+	end)
+end, { desc = "Duplicate current file to folder/filename" })
 
 -- Set highlight on search, but clear on pressing <Esc> in normal mode
 vim.opt.hlsearch = true
@@ -105,12 +124,6 @@ vim.keymap.set("n", "<leader>q", vim.diagnostic.setloclist, { desc = "Open diagn
 -- or just use <C-\><C-n> to exit terminal mode
 vim.keymap.set("t", "<Esc><Esc>", "<C-\\><C-n>", { desc = "Exit terminal mode" })
 
--- TIP: Disable arrow keys in normal mode
-vim.keymap.set("n", "<left>", '<cmd>echo "Use h to move!!"<CR>')
-vim.keymap.set("n", "<right>", '<cmd>echo "Use l to move!!"<CR>')
-vim.keymap.set("n", "<up>", '<cmd>echo "Use k to move!!"<CR>')
-vim.keymap.set("n", "<down>", '<cmd>echo "Use j to move!!"<CR>')
-
 -- Keybinds to make split navigation easier.
 --  Use CTRL+<hjkl> to switch between windows
 --
@@ -124,7 +137,6 @@ vim.keymap.set("n", "<C-k>", "<C-w><C-k>", { desc = "Move focus to the upper win
 --  See `:help lua-guide-autocommands`
 
 -- Highlight when yanking (copying) text
---  Try it with `yap` in normal mode
 --  See `:help vim.highlight.on_yank()`
 vim.api.nvim_create_autocmd("TextYankPost", {
 	desc = "Highlight when yanking (copying) text",
@@ -244,17 +256,6 @@ require("lazy").setup({
 		event = "InsertCharPre", -- Set the event to 'InsertCharPre' for better compatibility
 		priority = 1000,
 	},
-	{
-		"posva/vim-vue",
-	},
-
-	-- NOTE: Plugins can specify dependencies.
-	--
-	-- The dependencies are proper plugin specifications as well - anything
-	-- you do for a plugin at the top level, you can do for a dependency.
-	--
-	-- Use the `dependencies` key to specify the dependencies of a particular plugin
-
 	{ -- Fuzzy Finder (files, lsp, etc)
 		"nvim-telescope/telescope.nvim",
 		event = "VimEnter",
@@ -359,7 +360,6 @@ require("lazy").setup({
 			end, { desc = "[S]earch [N]eovim files" })
 		end,
 	},
-
 	{ -- LSP Configuration & Plugins
 		"neovim/nvim-lspconfig",
 		dependencies = {
@@ -904,7 +904,7 @@ require("lazy").setup({
 	--  Uncomment any of the lines below to enable them (you will need to restart nvim).
 	--
 	-- require 'kickstart.plugins.debug',
-	-- require 'kickstart.plugins.indent_line',
+	require("kickstart.plugins.indent_line"),
 	-- require 'kickstart.plugins.lint',
 	require("kickstart.plugins.autopairs"),
 	require("kickstart.plugins.neo-tree"),

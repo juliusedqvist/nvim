@@ -39,33 +39,11 @@ local sb = extdec.apply(s, { condition = line_begin })
 local postfixm = extdec.apply(postfix, { condition = in_mathzone, show_condition = in_mathzone })
 
 return {
-	s("note", {
-		t({
-			"# Note",
-			"model: KaTeX and Markdown Basic (Color)",
-			"markdown: false",
-			"tags: ",
-		}),
-		i(1, "tags"),
-		t({
-			"",
-			"## Front",
-			"**",
-		}),
-		i(2, "category"),
-		t({ "**", "" }),
-		i(3, "Question"),
-		t({
-			"",
-			"## Back",
-			"",
-		}),
-		i(4, "Answer"),
-	}),
-	-- Test Greek
-	s({ trig = "circ", snippetType = "autosnippet" }, t("\\circ"), { condition = in_mathzone }),
+	----------------------------------------------------------
+	---  MATH
+	----------------------------------------------------------
 
-	-- Example regex
+	-- Sympy
 	s( -- This snippets creates the sympy block ;)
 		{ trig = "sm", desc = "Creates a sympy block" },
 		fmt("sympy {} sympy{}", { i(1), i(0) })
@@ -109,7 +87,7 @@ print_latex(parsed)
 			return sn(nil, t(result))
 		end)
 	),
-
+	-- Greek Letters
 	s({
 		trig = "([oO]mg)",
 		snippetType = "autosnippet",
@@ -120,8 +98,6 @@ print_latex(parsed)
 			return "\\" .. snip.captures[1]:sub(1, 1) .. "mega"
 		end),
 	}),
-
-	-- Greek letters connection
 
 	s({ trig = "alp", snippetType = "autosnippet" }, t("\\alpha"), { condition = in_mathzone }),
 	s({ trig = "Alp", snippetType = "autosnippet" }, t("\\Alpha"), { condition = in_mathzone }),
@@ -183,35 +159,21 @@ print_latex(parsed)
 
 	-- Matrices
 
+	s({ trig = "pmat", condition = in_mathzone, snippetType = "autosnippet" }, {
+		t("\\begin{pmatrix}"),
+		t({ "", "\t" }),
+		i(1),
+		t({ "", "\\end{pmatrix}" }),
+		i(0),
+	}),
+
 	s({ trig = "...", snippetType = "autosnippet" }, t("\\ldots"), { condition = in_mathzone }),
 	s({ trig = "vdots", snippetType = "autosnippet" }, t("\\vdots"), { condition = in_mathzone }),
 	s({ trig = "ddots", snippetType = "autosnippet" }, t("\\ddots"), { condition = in_mathzone }),
 	s({ trig = "cdots", snippetType = "autosnippet" }, t("\\cdots"), { condition = in_mathzone }),
 
-	-- Latex
+	-- Equations
 
-	s("beg", {
-		t("\\begin{"),
-		i(1),
-		t("}"),
-		t({ "", "\t" }),
-		i(0),
-		t({ "", "\\end{" }),
-		rep(1),
-		t("}"),
-	}),
-	s("enum", {
-		t("\\begin{enumerate}"),
-		t({ "", "\t\\item " }),
-		i(0),
-		t({ "", "\\end{enumerate}" }),
-	}),
-	s("item", {
-		t("\\begin{itemize}"),
-		t({ "", "\t\\item " }),
-		i(0),
-		t({ "", "\\end{itemize}" }),
-	}),
 	s({ trig = "ali", condition = in_mathzone, snippetType = "autosnippet" }, {
 		t("\\begin{aligned}"),
 		t({ "", "\t" }),
@@ -244,7 +206,6 @@ print_latex(parsed)
 		{ condition = in_mathzone, priority = 500 } -- Lower priority for ->
 	),
 	s({ trig = "->", snippetType = "autosnippet" }, t("\\rightarrow"), { condition = in_mathzone }),
-	s({ trig = "<-", snippetType = "autosnippet" }, t("\\leftarrow"), { condition = in_mathzone }),
 	s({ trig = "invs", snippetType = "autosnippet" }, t("^{-1}"), { condition = in_mathzone }),
 	s({ trig = "cc", snippetType = "autosnippet" }, t("\\subset"), { condition = in_mathzone }),
 	s({ trig = "cceq", snippetType = "autosnippet" }, t("\\subseteq"), { condition = in_mathzone }),
@@ -380,8 +341,6 @@ print_latex(parsed)
 		fmta("\\int_{<>}^{<>}<>", { i(1, "0"), i(2, "\\infty"), i(3) })
 	),
 
-	-- Integral variable
-
 	s(
 		{
 			trig = "([a-zA-Z]var)",
@@ -396,20 +355,6 @@ print_latex(parsed)
 			end),
 		})
 	),
-
-	s({ trig = "sq", condition = in_mathzone, snippetType = "autosnippet" }, fmta("\\sqrt{<>}", { i(1) })),
-
-	-- Matrix
-
-	s({ trig = "pmat", condition = in_mathzone, snippetType = "autosnippet" }, {
-		t("\\begin{pmatrix}"),
-		t({ "", "\t" }),
-		i(1),
-		t({ "", "\\end{pmatrix}" }),
-		i(0),
-	}),
-
-	-- Math operations
 
 	s(
 		{ trig = "//", snippetType = "autosnippet", condition = in_mathzone },
@@ -454,20 +399,6 @@ print_latex(parsed)
 		t("}"),
 	}),
 
-	-- Setup math env
-
-	s(
-		{ trig = "mk", snippetType = "autosnippet" },
-		fmta("$<>$", {
-			i(1),
-		})
-	),
-	s(
-		{ trig = "dm", snippetType = "autosnippet" },
-		fmt("$$\n<>\n$$", {
-			i(1),
-		}, { delimiters = "<>" })
-	),
 	s(
 		{
 			trig = "([%a%)%]%}%|])(%d)",
@@ -617,53 +548,45 @@ print_latex(parsed)
 			end),
 		})
 	),
-	s({
-		trig = "mdinit",
-		snippetType = "autosnippet",
-	}, {
-		t({ "---", "" }),
-		t("pandoc_:"),
-		t({ "", "  - output: .pdf", "" }),
-		t({ "---", "" }),
-		t({ "", "" }),
-	}),
-	s({
-		trig = "!note",
-		snippetType = "autosnippet",
-	}, {
-		t({ "\\begin{center}", "" }),
-		t({ "\t\\begin{tcolorbox}[colback=blue!5!white,colframe=blue!75!black,title=Note]", "" }),
-		t("\t"),
-		i(1),
-		t({ "", "\t\\end{tcolorbox}", "" }),
-		t({ "\\end{center}", "" }),
-		i(0),
-	}),
-	s({
-		trig = "!the",
-		snippetType = "autosnippet",
-	}, {
-		t({ "\\begin{center}", "" }),
-		t({ "\t\\begin{tcolorbox}[colback=red!5!white,colframe=red!75!black,title=Theorem]", "" }),
-		t("\t"),
-		i(1),
-		t({ "", "\t\\end{tcolorbox}", "" }),
-		t({ "\\end{center}", "" }),
-		i(0),
-	}),
-	s({
-		trig = "!def",
-		snippetType = "autosnippet",
-	}, {
-		t({ "\\begin{center}", "" }),
-		t({ "\t\\begin{tcolorbox}[colback=yellow!5!white,colframe=yellow!75!black,title=Definition]", "" }),
-		t("\t"),
-		i(1),
-		t({ "", "\t\\end{tcolorbox}", "" }),
-		t({ "\\end{center}", "" }),
-		i(0),
-	}),
-
 	s({ trig = "tt", condition = in_mathzone, snippetType = "autosnippet" }, fmta("\\text{<>}", { i(1) })),
 	s({ trig = "bb", condition = in_mathzone, snippetType = "autosnippet" }, fmta("\\mathbf{<>}", { i(1) })),
+
+	-- Set up environment
+
+	s(
+		{ trig = "mk", snippetType = "autosnippet" },
+		fmta("$<>$", {
+			i(1),
+		})
+	),
+	s(
+		{ trig = "dm", snippetType = "autosnippet" },
+		fmta(
+			[[
+\begin{displaymath}
+	<>
+\end{displaymath}
+
+		]],
+			{
+				i(1),
+			},
+			{ delimiters = "<>" }
+		)
+	),
+	s(
+		{ trig = "beq", snippetType = "autosnippet" },
+		fmta(
+			[[
+\begin{equation}
+	<>
+\end{equation}
+
+		]],
+			{
+				i(1),
+			},
+			{ delimiters = "<>" }
+		)
+	),
 }

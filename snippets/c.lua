@@ -3,10 +3,11 @@ local s = ls.snippet
 local t = ls.text_node
 local i = ls.insert_node
 local fmta = require("luasnip.extras.fmt").fmta
+local fmt = require("luasnip.extras.fmt").fmt
 
 return {
 	s(
-		{ trig = "for", snippetType = "autosnippet" },
+		{ trig = "for" },
 		fmt(
 			[[
 		for (int {} = {}; {} < {}; {}) {{

@@ -1,3 +1,0 @@
-$$
-sympy \exp sympy
-$$
