@@ -93,18 +93,14 @@ vim.keymap.set("s", "<Tab>", function()
 end, { expr = true, silent = true })
 
 vim.keymap.set("n", "<leader>dup", function()
-	vim.ui.input({ prompt = "Folder name: " }, function(folder)
-		if not folder or folder == "" then
-			return
-		end
-		vim.ui.input({ prompt = "File name: " }, function(file)
-			if not file or file == "" then
-				return
-			end
-			vim.cmd("Duplicate " .. folder .. " " .. file)
-		end)
-	end)
-end, { desc = "Duplicate current file to folder/filename" })
+	vim.cmd("Duplicate")
+end, { desc = "Duplicate current file to /parent/current/filename" })
+
+vim.keymap.set("n", "<leader>prm", function()
+	vim.cmd("FlashcardPrompt")
+end, { desc = "Send current buffer as prompt and open output in split" })
+
+vim.keymap.set("v", "<leader>prm", ":FlashcardPrompt<CR>", { desc = "Prompt from selection" })
 
 -- Set highlight on search, but clear on pressing <Esc> in normal mode
 vim.opt.hlsearch = true
@@ -128,11 +124,11 @@ vim.keymap.set("t", "<Esc><Esc>", "<C-\\><C-n>", { desc = "Exit terminal mode" }
 --  Use CTRL+<hjkl> to switch between windows
 --
 --  See `:help wincmd` for a list of all window commands
-vim.keymap.set("n", "<C-h>", "<C-w><C-h>", { desc = "Move focus to the left window" })
-vim.keymap.set("n", "<C-l>", "<C-w><C-l>", { desc = "Move focus to the right window" })
-vim.keymap.set("n", "<C-j>", "<C-w><C-j>", { desc = "Move focus to the lower window" })
-vim.keymap.set("n", "<C-k>", "<C-w><C-k>", { desc = "Move focus to the upper window" })
-
+-- vim.keymap.set("n", "<C-h>", "<C-w><C-h>", { desc = "Move focus to the left window" })
+-- vim.keymap.set("n", "<C-l>", "<C-w><C-l>", { desc = "Move focus to the right window" })
+-- vim.keymap.set("n", "<C-j>", "<C-w><C-j>", { desc = "Move focus to the lower window" })
+-- vim.keymap.set("n", "<C-k>", "<C-w><C-k>", { desc = "Move focus to the upper window" })
+--
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
 
@@ -142,7 +138,7 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 	desc = "Highlight when yanking (copying) text",
 	group = vim.api.nvim_create_augroup("kickstart-highlight-yank", { clear = true }),
 	callback = function()
-		vim.highlight.on_yank()
+		vim.hl.on_yank()
 	end,
 })
 
@@ -181,21 +177,21 @@ require("lazy").setup({
 
 	-- Here is a more advanced example where we pass configuration
 	-- options to `gitsigns.nvim`. This is equivalent to the following Lua:
-	--    require('gitsigns').setup({ ... })
-	--
-	-- See `:help gitsigns` to understand what the configuration keys do
-	{ -- Adds git related signs to the gutter, as well as utilities for managing changes
-		"lewis6991/gitsigns.nvim",
-		opts = {
-			signs = {
-				add = { text = "+" },
-				change = { text = "~" },
-				delete = { text = "_" },
-				topdelete = { text = "‾" },
-				changedelete = { text = "~" },
-			},
-		},
-	},
+	-- require("gitsigns").setup({ ... })( --
+	-- 	-- See `:help gitsigns` to understand what the configuration keys do
+	-- 	{ -- Adds git related signs to the gutter, as well as utilities for managing changes
+	-- 		"lewis6991/gitsigns.nvim",
+	-- 		opts = {
+	-- 			signs = {
+	-- 				add = { text = "+" },
+	-- 				change = { text = "~" },
+	-- 				delete = { text = "_" },
+	-- 				topdelete = { text = "‾" },
+	-- 				changedelete = { text = "~" },
+	-- 			},
+	-- 		},
+	-- 	}
+	-- ),
 
 	{
 		"folke/which-key.nvim",
@@ -221,6 +217,13 @@ require("lazy").setup({
 	},
 	{
 		"preservim/vim-markdown",
+	},
+	{
+		"vuciv/golf",
+	},
+	{
+		"sindrets/diffview.nvim",
+		dependencies = { "nvim-lua/plenary.nvim" },
 	},
 	{
 		"abecodes/tabout.nvim",
@@ -847,52 +850,52 @@ require("lazy").setup({
 			{ "<localLeader>l", "", desc = "+vimtex" },
 		},
 	},
-	{
-		"TobinPalmer/pastify.nvim",
-		cmd = { "Pastify", "PastifyAfter" },
-		event = { "BufReadPost" }, -- Load after the buffer is read, I like to be able to paste right away
-		keys = {
-			{ noremap = true, mode = "x", "<leader>p", "<cmd>PastifyAfter<CR>" },
-			{ noremap = true, mode = "n", "<leader>p", "<cmd>PastifyAfter<CR>" },
-			{ noremap = true, mode = "n", "<leader>P", "<cmd>Pastify<CR>" },
-		},
-		config = function()
-			require("pastify").setup({
-				opts = {
-					absolute_path = false, -- use absolute or relative path to the working directory
-					apikey = "", -- Api key, required for online saving
-					local_path = "/assets/imgs/", -- The path to put local files in, ex ~/Projects/<name>/assets/images/<imgname>.png
-					save = "local", -- Either 'local' or 'online' or 'local_file'
-					filename = function()
-						return vim.fn.expand("%:t:r") .. "_" .. os.date("%Y-%m-%d_%H-%M-%S")
-					end,
-					default_ft = "markdown", -- Default filetype to use
-				},
-				ft = { -- Custom snippets for different filetypes, will replace $IMG$ with the image url
-					html = '<img src="$IMG$" alt="">',
-					markdown = "![]($IMG$)",
-					tex = [[\includegraphics[width=\linewidth]{$IMG$}]],
-					css = 'background-image: url("$IMG$");',
-					js = 'const img = new Image(); img.src = "$IMG$";',
-					xml = '<image src="$IMG$" />',
-					php = '<?php echo "<img src="$IMG$" alt="">"; ?>',
-					python = "# $IMG$",
-					java = "// $IMG$",
-					c = "// $IMG$",
-					cpp = "// $IMG$",
-					swift = "// $IMG$",
-					kotlin = "// $IMG$",
-					go = "// $IMG$",
-					typescript = "// $IMG$",
-					ruby = "# $IMG$",
-					vhdl = "-- $IMG$",
-					verilog = "// $IMG$",
-					systemverilog = "// $IMG$",
-					lua = "-- $IMG$",
-				},
-			})
-		end,
-	},
+	-- {
+	-- 	"TobinPalmer/pastify.nvim",
+	-- 	cmd = { "Pastify", "PastifyAfter" },
+	-- 	event = { "BufReadPost" }, -- Load after the buffer is read, I like to be able to paste right away
+	-- 	keys = {
+	-- 		{ noremap = true, mode = "x", "<leader>p", "<cmd>PastifyAfter<CR>" },
+	-- 		{ noremap = true, mode = "n", "<leader>p", "<cmd>PastifyAfter<CR>" },
+	-- 		{ noremap = true, mode = "n", "<leader>P", "<cmd>Pastify<CR>" },
+	-- 	},
+	-- 	config = function()
+	-- 		require("pastify").setup({
+	-- 			opts = {
+	-- 				absolute_path = false, -- use absolute or relative path to the working directory
+	-- 				apikey = "", -- Api key, required for online saving
+	-- 				local_path = "/assets/imgs/", -- The path to put local files in, ex ~/Projects/<name>/assets/images/<imgname>.png
+	-- 				save = "local", -- Either 'local' or 'online' or 'local_file'
+	-- 				filename = function()
+	-- 					return vim.fn.expand("%:t:r") .. "_" .. os.date("%Y-%m-%d_%H-%M-%S")
+	-- 				end,
+	-- 				default_ft = "markdown", -- Default filetype to use
+	-- 			},
+	-- 			ft = { -- Custom snippets for different filetypes, will replace $IMG$ with the image url
+	-- 				html = '<img src="$IMG$" alt="">',
+	-- 				markdown = "![]($IMG$)",
+	-- 				tex = [[\includegraphics[width=\linewidth]{$IMG$}]],
+	-- 				css = 'background-image: url("$IMG$");',
+	-- 				js = 'const img = new Image(); img.src = "$IMG$";',
+	-- 				xml = '<image src="$IMG$" />',
+	-- 				php = '<?php echo "<img src="$IMG$" alt="">"; ?>',
+	-- 				python = "# $IMG$",
+	-- 				java = "// $IMG$",
+	-- 				c = "// $IMG$",
+	-- 				cpp = "// $IMG$",
+	-- 				swift = "// $IMG$",
+	-- 				kotlin = "// $IMG$",
+	-- 				go = "// $IMG$",
+	-- 				typescript = "// $IMG$",
+	-- 				ruby = "# $IMG$",
+	-- 				vhdl = "-- $IMG$",
+	-- 				verilog = "// $IMG$",
+	-- 				systemverilog = "// $IMG$",
+	-- 				lua = "-- $IMG$",
+	-- 			},
+	-- 		})
+	-- 	end,
+	-- },
 
 	-- The following two comments only work if you have downloaded the kickstart repo, not just copy pasted the
 	-- init.lua. If you want these files, they are in the repository, so you can just download them and
@@ -908,7 +911,7 @@ require("lazy").setup({
 	-- require 'kickstart.plugins.lint',
 	require("kickstart.plugins.autopairs"),
 	require("kickstart.plugins.neo-tree"),
-	-- require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
+	require("kickstart.plugins.gitsigns"), -- adds gitsigns recommend keymaps
 
 	-- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
 	--    This is the easiest way to modularize your config.
