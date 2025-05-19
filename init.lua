@@ -96,11 +96,8 @@ vim.keymap.set("n", "<leader>dup", function()
 	vim.cmd("Duplicate")
 end, { desc = "Duplicate current file to /parent/current/filename" })
 
-vim.keymap.set("n", "<leader>prm", function()
-	vim.cmd("FlashcardPrompt")
-end, { desc = "Send current buffer as prompt and open output in split" })
-
 vim.keymap.set("v", "<leader>prm", ":FlashcardPrompt<CR>", { desc = "Prompt from selection" })
+vim.keymap.set("v", "<leader>sp", ":FlashcardSplit<CR>", { desc = "Run python script" })
 
 -- Set highlight on search, but clear on pressing <Esc> in normal mode
 vim.opt.hlsearch = true

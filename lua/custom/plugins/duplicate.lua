@@ -37,6 +37,35 @@ return {
 			nargs = 0,
 		})
 
+		vim.api.nvim_create_user_command("FlashcardSplit", function()
+			local start_pos = vim.fn.getpos("'<")
+			local end_pos = vim.fn.getpos("'>")
+			local bufnr = 0 -- current buffer
+
+			local lines = vim.api.nvim_buf_get_lines(bufnr, start_pos[2] - 1, end_pos[2], false)
+			if #lines == 0 then
+				vim.notify("No text selected", vim.log.levels.WARN)
+				return
+			end
+
+			lines[1] = string.sub(lines[1], start_pos[3], -1)
+			lines[#lines] = string.sub(lines[#lines], 1, end_pos[3])
+
+			local input = table.concat(lines, "\n")
+
+			local path_arg = vim.fn.expand("%:p:h")
+			local text_arg = vim.fn.shellescape(input)
+
+			local cmd = {
+				"python3",
+				"/home/arch/.local/bin/process_flashcards.py",
+				text_arg,
+				path_arg,
+			}
+			vim.fn.jobstart(cmd)
+			print(path_arg)
+		end, { range = true })
+
 		vim.api.nvim_create_user_command("FlashcardPrompt", function()
 			local api_key = os.getenv("OPENAI_API_KEY")
 			if not api_key then
@@ -71,7 +100,7 @@ return {
 				"Authorization: Bearer " .. api_key,
 				"-d",
 				vim.fn.json_encode({
-					model = "gpt-4o-mini",
+					model = "gpt-4.1",
 					messages = {
 						{ role = "user", content = input },
 					},
