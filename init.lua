@@ -532,7 +532,21 @@ require("lazy").setup({
 				--    https://github.com/pmizio/typescript-tools.nvim
 				--
 				-- But for many setups, the LSP (`tsserver`) will work just fine
-				-- typescript-language-server = {},
+
+				ts_ls = {
+					init_options = {
+						plugins = {
+							{
+								name = "@vue/typescript-plugin",
+								location = vim.fn.stdpath("data")
+									.. "/mason/packages/vue-language-server/node_modules/@vue/language-server",
+								languages = { "vue" },
+							},
+						},
+					},
+					filetypes = { "typescript", "javascript", "javascriptreact", "typescriptreact", "vue" },
+				},
+				volar = {},
 				--
 
 				lua_ls = {
@@ -566,8 +580,8 @@ require("lazy").setup({
 				"stylua", -- Used to format Lua code
 				"pyright",
 				"vue-language-server",
-				-- "tsserver",
 				"typescript-language-server",
+				"prettier",
 			})
 			require("mason-tool-installer").setup({ ensure_installed = ensure_installed })
 
